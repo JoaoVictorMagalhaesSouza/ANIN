@@ -1,67 +1,69 @@
 #%% Load libs
-from pyexpat.errors import XML_ERROR_NOT_STANDALONE
-from re import X
-import numpy as np
 import pandas as pd
-import tensorflow as tf
 #Importando funções internas:
-import os, sys
-from feature_engineering import *
+import os
+import feature_engineering as fe
 from data_prep import *
 from models import *
 import os.path
 import json
 
+
+
 with open ('configs.json') as file:
     ativo = json.load(file)[0]
 
-def predita(x_test, df):    
-    #  Separing train and test
-    X_train, y_train = aplica_pipeline(df)
-    X_train = X_train.drop(['price.close'], axis=1)
-    print(x_test)
-    model = MLP_real_time(X_train,x_test,y_train)
+
+def preditaXGB(X_train,X_test,y_train):    
+    model = ModelXGboost(X_train,y_train)
     model.fit()
-    return model.predict()
-# 
+    pred = model.predict(X_test)
+    return pred[0]
+    
+
+
+
+
 
 #%% Teste
-def main(df,preco_open, preco_high, preco_low, volume, price_adjusted, ret_closing_prices, preco_fechamento_ant):
+def main(df):
 
+    df_fe = fe.FeatureEngineering(df).pipeline_feat_eng()
+    df_ml = df.merge(df_fe, on=df.index, how='left')
+    df_ml.index = df_fe.index
+    df_ml['preco_fechamento_ant'] = df_ml['price.close'].shift(1)
+    df_ml['preco_fechamento_amanha'] = df_ml['price.close'].shift(-1)
+    df_ml = df_ml.drop(['key_0'],axis=1)
+    df_ml = df_ml.fillna(0)
+    #Split in train, val and test
+    df_test = df_ml.tail(1)
+    df_train = df_ml.iloc[:-1]
+    
 
-    x_test = np.array([preco_open,preco_high,preco_low,volume, price_adjusted, ret_closing_prices, preco_fechamento_ant]).reshape(1,-1)
-    x_test = pd.DataFrame(x_test, columns=['price.open','price.high','price.low','volume', 'price.adjusted', 'ret.closing.prices', 'preco_fechamento_ant'])
-    x_test = normaliza_dados(x_test, df)
-    x_test = x_test.drop(['price.close'],axis=1)
-
-
-    return predita(x_test, df)[0]   
+    X_train, y_train = df_train.drop('preco_fechamento_amanha', axis = 1), df_train['preco_fechamento_amanha']
+    X_test = df_test.drop('preco_fechamento_amanha', axis = 1)
+    return preditaXGB(X_train,X_test,y_train)
 
 
 
 #"Ative_name" vem do Shiny
 nome_ativo = ativo
+df = pd.read_csv(f"{nome_ativo}.csv",index_col='ref.date')
 
-df = pd.read_csv(f"{nome_ativo}.csv")
-df['preco_fechamento_ant'] = df['price.close'].shift(1)
-df = df.drop(columns=['ref.date','ticker','Unnamed: 0','ret.adjusted.prices'])
+df = df.drop(columns=['ticker','ret.adjusted.prices'])
+
+
 df = df.fillna(0)
 #Pegar o ultimo valor dos dados (último dia)
-preco_abertura = df['price.open'].iloc[-1]
-preco_mais_alto = df['price.high'].iloc[-1]
-preco_mais_baixo = df['price.low'].iloc[-1]
-volume = df['volume'].iloc[-1]
-preco_ajustado = df['price.adjusted'].iloc[-1]
-ret_closing_prices = df['ret.closing.prices'].iloc[-1]
-preco_fechamento_ant = df['preco_fechamento_ant'].iloc[-1]
-#Drop the last row (last day)
-df = df.drop(df.index[-1])
 
-predicao = main(df,preco_abertura, preco_mais_alto, preco_mais_baixo, volume, preco_ajustado, ret_closing_prices, preco_fechamento_ant)
+predicao = round(main(df),2)
+preco_abertura = round(df.tail(1)['price.open'].values[0],2)
+preco_mais_alto = round(df.tail(1)['price.high'].values[0],2)
+preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
+volume = df.tail(1)['volume'].values
+preco_ajustado = round(df.tail(1)['price.adjusted'].values[0],2)
 
-df.to_csv(f'{nome_ativo}.csv')
 
 os.remove(f'{nome_ativo}.csv')
 os.remove('configs.json')
-    
 

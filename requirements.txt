@@ -1,4 +1,3 @@
-tensorflow
 sklearn
 utils
 pandas

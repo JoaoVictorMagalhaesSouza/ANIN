@@ -294,6 +294,7 @@ shinyServer(function(input, output) {
         
         #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
         DataSet = DataSet$df.tickers
+    
         #Escrevendo os dados
         incProgress(1/4,detail = "Escrevendo dados...")
         write.csv(DataSet,paste0(input$inAtivoPredict,".csv"))
@@ -301,7 +302,7 @@ shinyServer(function(input, output) {
         
         
         
-        #use_condaenv("C:/Users/JoaoV/anaconda3/envs/Eldorado_Deus", required = TRUE)
+        #use_condaenv("C:/Users/JoaoV/anaconda3/envs/ProjetoDados", required = TRUE)
         #Escrevendo os parametors
         incProgress(2/4,detail = "Escrevendo parâmetros...")
         ative_name = input$inAtivoPredict
@@ -316,14 +317,14 @@ shinyServer(function(input, output) {
         incProgress(3/4,detail = "Executando a predição...")
         py_run_file(file="real_time.py")
         incProgress(4/4,detail = "Gerando os resultados...")
-        boxPredicao <- valueBox(subtitle = as.character(py$predicao),value = "Nossa predição",color = "yellow",icon = icon("chart-line"))
+        boxPredicao <- valueBox(subtitle = as.character(py$predicao),value = "Nossa predição",color = "yellow")
         boxOpen <- valueBox(subtitle = as.character(py$preco_abertura),value = "Preço de abertura",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxHigh <- valueBox(subtitle = as.character(py$preco_mais_alto),value = "Preço de pico",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxLow <- valueBox(subtitle = as.character(py$preco_mais_baixo),value = "Preço de vale",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxVolume <- valueBox(subtitle = as.character(py$volume),value = "Volume",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxAdjusted <- valueBox(subtitle = as.character(py$preco_ajustado),value = "Preço ajustado",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         #boxRetClosing <- valueBox(subtitle = as.character(py$ret_closing_prices),value = "Retorno percentual",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxCloseAnterior <- valueBox(subtitle = as.character(py$preco_fechamento_ant),value = "Preço de fechamento anterior",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
+        #boxCloseAnterior <- valueBox(subtitle = as.character(py$preco_fechamento_ant),value = "Preço de fechamento anterior",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         
         
         
@@ -334,7 +335,7 @@ shinyServer(function(input, output) {
         output$outVolume <- renderValueBox(boxVolume)
         output$outPriceAdjusted <- renderValueBox(boxAdjusted)
         #output$outRetClosingPrices <- renderValueBox(boxRetClosing)
-        output$outCloseAnterior <- renderValueBox(boxCloseAnterior)
+        #output$outCloseAnterior <- renderValueBox(boxCloseAnterior)
         
         })
         
