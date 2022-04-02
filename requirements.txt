@@ -1,7 +1,5 @@
 tensorflow
 sklearn
-dash
 utils
 pandas
 numpy
-catboost
