@@ -302,7 +302,7 @@ shinyServer(function(input, output) {
         
         
         
-        #use_condaenv("C:/Users/JoaoV/anaconda3/envs/ProjetoDados", required = TRUE)
+        use_condaenv("C:/Users/JoaoV/anaconda3/envs/ProjetoDados", required = TRUE)
         #Escrevendo os parametors
         incProgress(2/4,detail = "Escrevendo parâmetros...")
         ative_name = input$inAtivoPredict
@@ -324,7 +324,7 @@ shinyServer(function(input, output) {
         boxVolume <- valueBox(subtitle = as.character(py$volume),value = "Volume",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxAdjusted <- valueBox(subtitle = as.character(py$preco_ajustado),value = "Preço ajustado",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         #boxRetClosing <- valueBox(subtitle = as.character(py$ret_closing_prices),value = "Retorno percentual",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        #boxCloseAnterior <- valueBox(subtitle = as.character(py$preco_fechamento_ant),value = "Preço de fechamento anterior",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
+        boxErroPredicao <- valueBox(subtitle = as.character(py$erro),value = "Erro (%)",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         
         
         
@@ -335,7 +335,7 @@ shinyServer(function(input, output) {
         output$outVolume <- renderValueBox(boxVolume)
         output$outPriceAdjusted <- renderValueBox(boxAdjusted)
         #output$outRetClosingPrices <- renderValueBox(boxRetClosing)
-        #output$outCloseAnterior <- renderValueBox(boxCloseAnterior)
+        output$outErroPredicao <- renderValueBox(boxErroPredicao)
         
         })
         

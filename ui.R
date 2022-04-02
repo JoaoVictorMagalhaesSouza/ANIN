@@ -252,13 +252,14 @@ shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
                       
              ),
              valueBoxOutput("outPredicao"),
+             valueBoxOutput("outErroPredicao"),
              valueBoxOutput("outPriceOpen"),
              valueBoxOutput("outPriceHigh"),
              valueBoxOutput("outPriceLow"),
              valueBoxOutput("outVolume"),
              valueBoxOutput("outPriceAdjusted"),
              #("outRetClosingPrices"),
-             valueBoxOutput("outCloseAnterior"),
+             
              ),
      
      tabItem(tabName = 'developers',
