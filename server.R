@@ -317,7 +317,7 @@ shinyServer(function(input, output) {
         incProgress(3/4,detail = "Executando a predição...")
         py_run_file(file="real_time.py")
         incProgress(4/4,detail = "Gerando os resultados...")
-        boxPredicao <- valueBox(subtitle = as.character(py$predicao),value = "Nossa predição",color = "yellow")
+        boxPredicao <- valueBox(subtitle = as.character(round(py$predicao,2)),value = "Nossa predição",color = "yellow")
         boxOpen <- valueBox(subtitle = as.character(py$preco_abertura),value = "Preço de abertura",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxHigh <- valueBox(subtitle = as.character(py$preco_mais_alto),value = "Preço de pico",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
         boxLow <- valueBox(subtitle = as.character(py$preco_mais_baixo),value = "Preço de vale",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))

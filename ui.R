@@ -13,6 +13,7 @@ shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
   
   dashboardHeader(title = "Análise da Bolsa de Valores de São Paulo",titleWidth = '500px'),
   
+
   sidebar <- dashboardSidebar(
     sidebarMenu(
       menuItem(h4("Apresentação"), tabName = "presentation"),
