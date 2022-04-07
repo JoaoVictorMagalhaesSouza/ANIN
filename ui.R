@@ -252,12 +252,15 @@ shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
                       
              ),
              valueBoxOutput("outPredicao"),
+             valueBoxOutput('outTendencia'),
              valueBoxOutput("outErroPredicao"),
              valueBoxOutput("outPriceOpen"),
+             valueBoxOutput('outCloseAnt'),
+             valueBoxOutput("outPriceAdjusted"),
              valueBoxOutput("outPriceHigh"),
              valueBoxOutput("outPriceLow"),
              valueBoxOutput("outVolume"),
-             valueBoxOutput("outPriceAdjusted"),
+             
              #("outRetClosingPrices"),
              
              ),

@@ -317,25 +317,29 @@ shinyServer(function(input, output) {
         incProgress(3/4,detail = "Executando a predição...")
         py_run_file(file="real_time.py")
         incProgress(4/4,detail = "Gerando os resultados...")
-        boxPredicao <- valueBox(subtitle = as.character(round(py$predicao,2)),value = "Nossa predição",color = "yellow")
-        boxOpen <- valueBox(subtitle = as.character(py$preco_abertura),value = "Preço de abertura",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxHigh <- valueBox(subtitle = as.character(py$preco_mais_alto),value = "Preço de pico",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxLow <- valueBox(subtitle = as.character(py$preco_mais_baixo),value = "Preço de vale",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxVolume <- valueBox(subtitle = as.character(py$volume),value = "Volume",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxAdjusted <- valueBox(subtitle = as.character(py$preco_ajustado),value = "Preço ajustado",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
+        boxPredicao <- valueBox(subtitle = tags$h3(as.character(round(py$predicao,2))),value = "Nossa predição",color = "blue")
+        boxOpen <- valueBox(subtitle = tags$h3(as.character(py$preco_abertura)),value = "Preço de abertura",color = "black")
+        boxHigh <- valueBox(subtitle = tags$h3(as.character(py$preco_mais_alto)),value = "Preço de pico",color = "black")
+        boxLow <- valueBox(subtitle = tags$h3(as.character(py$preco_mais_baixo)),value = "Preço de vale",color = "black")
+        boxVolume <- valueBox(subtitle = tags$h3(as.character(py$volume)),value = "Volume",color = "black")
+        boxAdjusted <- valueBox(subtitle = tags$h3(as.character(py$preco_ajustado)),value = "Preço ajustado",color = "black")
         #boxRetClosing <- valueBox(subtitle = as.character(py$ret_closing_prices),value = "Retorno percentual",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        boxErroPredicao <- valueBox(subtitle = as.character(py$erro),value = "Erro (%)",color = "black",icon = icon("thumbs-up", lib = "glyphicon"))
-        
+        boxErroPredicao <- valueBox(subtitle = tags$h3(as.character(py$erro)),value = "Erro (%)",color = "blue")
+        boxTendencia <- valueBox(subtitle = tags$h3(as.character(py$acertos) ),value = "Acerto Tend. (%)",color = "blue")
+        boxClose  <- valueBox(subtitle = tags$h3(as.character(py$preco_fechamento) ),value = "Últ. fechamento",color = "black")
+          
         
         
         output$outPredicao <- renderValueBox(boxPredicao)
         output$outPriceOpen <- renderValueBox(boxOpen)
         output$outPriceHigh <- renderValueBox(boxHigh)
+        output$outCloseAnt <- renderValueBox(boxClose)
         output$outPriceLow <- renderValueBox(boxLow)
         output$outVolume <- renderValueBox(boxVolume)
         output$outPriceAdjusted <- renderValueBox(boxAdjusted)
         #output$outRetClosingPrices <- renderValueBox(boxRetClosing)
         output$outErroPredicao <- renderValueBox(boxErroPredicao)
+        output$outTendencia <- renderValueBox(boxTendencia)
         
         })
         

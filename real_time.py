@@ -8,6 +8,7 @@ from models import *
 import os.path
 import json
 import pickle
+from calcula_acertos import *
 
 
 
@@ -62,24 +63,29 @@ def main(df):
 #"Ative_name" vem do Shiny
 nome_ativo = ativo
 
+
 df = pd.read_csv(f"{nome_ativo}.csv",index_col='ref.date')
 
-df = df.drop(columns=['Unnamed: 0','ticker','ret.adjusted.prices'])
+df = df.drop(columns=['Unnamed: 0','ticker','ret.adjusted.prices','ret.closing.prices'])
 
 
 df = df.fillna(0)
 #Pegar o ultimo valor dos dados (último dia)
 
 predicao = round(main(df),2)
+preco_fechamento = round(df.tail(1)['price.close'].values[0],2)
 preco_abertura = round(df.tail(1)['price.open'].values[0],2)
 preco_mais_alto = round(df.tail(1)['price.high'].values[0],2)
 preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
 volume = df.tail(1)['volume'].values
 preco_ajustado = round(df.tail(1)['price.adjusted'].values[0],2)
 erro = round(calcula_erro(df),2)
+acertos = round(calcula_acertos(ativo),2)
 
 
 os.remove(f'{nome_ativo}.csv')
 os.remove('configs.json')
 os.remove('df_for_error.csv')
 
+
+# %%
