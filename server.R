@@ -302,7 +302,7 @@ shinyServer(function(input, output) {
         
         
         
-        use_condaenv("C:/Users/JoaoV/anaconda3/envs/ProjetoDados", required = TRUE)
+        #use_condaenv("C:/Users/JoaoV/anaconda3/envs/ProjetoDados", required = TRUE)
         #Escrevendo os parametors
         incProgress(2/4,detail = "Escrevendo parâmetros...")
         ative_name = input$inAtivoPredict
