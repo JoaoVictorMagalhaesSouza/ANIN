@@ -5,3 +5,4 @@ pandas
 numpy
 pandas_datareader
 pyodbc
+psycopg2

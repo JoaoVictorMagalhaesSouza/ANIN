@@ -11,8 +11,8 @@ from database import *
 from datetime import datetime, timedelta
 
 def calcula_acertos(ativo: str):
-    connect = cria_conexão_banco()
-    query = f'SELECT TOP 7 [TS],[{ativo}] FROM tendencia ORDER BY TS DESC'
+    connect = cria_conexao_postgre()
+    query = f'SELECT "TS","{ativo}" FROM tendencia ORDER BY "TS" DESC LIMIT 7' 
     df = pd.read_sql(query, connect)
     acertos = df[df[ativo]=='Acertou'].count()[0]
     erros = df[df[ativo]=='Errou'].count()[0]

@@ -59,8 +59,8 @@ connect = cria_conexão_banco()
 query = "SELECT * FROM dados_predicao WHERE TS=(SELECT MAX(TS) FROM dados_predicao)"
 ultima_predicao = pd.read_sql(query, con=connect)
 #Mudar aqui todo dia para a data de ontem (ou ultimo dia util)
-start = '2022-04-05'#(datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-end = datetime.today().strftime('%Y-%m-%d')
+start = '2022-04-07'#(datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+end = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 valores_reais = pd.DataFrame()
 valores_reais['TS'] = [start,end]
 valores_tendencia = [end]
@@ -75,7 +75,7 @@ for acao in acoesDisponiveis:
     else:
         valores_tendencia.append("Errou")
 
-connection = cria_conexão_banco()
+connection = cria_conexao_postgre()
 valores_tendencia = str(valores_tendencia).replace('[', '').replace(']', '').replace(' ', '')
 query = f'INSERT INTO tendencia VALUES ({valores_tendencia})'
 cursor = connection.cursor()
@@ -86,11 +86,12 @@ cursor.close()
 
 
 #%% Save predict
-conexao = cria_conexão_banco()
+conexao = cria_conexao_postgre()
 valores = str(valores).replace('[', '').replace(']', '').replace(' ', '')
 query_insert = f'INSERT INTO dados_predicao VALUES ({valores})'
 cursor = conexao.cursor()
 cursor.execute(query_insert)
 conexao.commit()
 cursor.close()
-#%%
+
+# %%
