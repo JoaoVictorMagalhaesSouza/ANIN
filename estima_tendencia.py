@@ -55,11 +55,11 @@ for acao in acoesDisponiveis:
 
 
 #%%
-connect = cria_conexão_banco()
-query = "SELECT * FROM dados_predicao WHERE TS=(SELECT MAX(TS) FROM dados_predicao)"
+connect = cria_conexao_postgre()
+query = "SELECT * FROM dados_predicao WHERE 'TS'=(SELECT MAX('TS') FROM dados_predicao)"
 ultima_predicao = pd.read_sql(query, con=connect)
 #Mudar aqui todo dia para a data de ontem (ou ultimo dia util)
-start = '2022-04-07'#(datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 end = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 valores_reais = pd.DataFrame()
 valores_reais['TS'] = [start,end]
