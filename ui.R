@@ -140,7 +140,7 @@ shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
      tabItem(tabName = 'whats_markowitz',
              h3(style = "font-weight: bold","O que é a Teoria de Markowitz"),
              h4(style = "text-align: justify;","A Teoria Moderna do Portfólio, também conhecida como Fronteira Eficience de Markowitz ou Portfólio Eficiente de Markowitz,
-                                       consiste em uma teoria desenvolvida por um economista chamado",strong("Henry Markowitz"),"na qual objetiva-se otimizar a carteira de investimentos de um investidor analisando dois fatores: risco e retorno.
+                                       consiste em uma teoria desenvolvida por um economista chamado",strong("Harry Markowitz"),"na qual objetiva-se otimizar a carteira de investimentos de um investidor analisando dois fatores: risco e retorno.
                                        Grosseiramente, é possível analisar combinações de proporções de risco e retorno dos ativos da carteira de maneira a escolher combinações de investimento que sejam
                                        mais rentáveis e menos arriscadas.
                                  "),

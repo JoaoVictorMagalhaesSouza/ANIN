@@ -57,7 +57,7 @@ for acao in acoesDisponiveis:
 #%%
 connect = cria_conexao_postgre()
 query = "SELECT * FROM dados_predicao WHERE 'TS'=(SELECT MAX('TS') FROM dados_predicao)"
-ultima_predicao = pd.read_sql(query, con=connect)
+ultima_predicao = pd.read_sql(query, con=connect).tail(1)
 #Mudar aqui todo dia para a data de ontem (ou ultimo dia util)
 start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 end = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
@@ -68,9 +68,9 @@ for acao in acoesDisponiveis:
     linha = web.DataReader(acao, 'yahoo', start=start, end=end)
     valores_reais[acao] = (linha.loc[:,['Close']]*100).values
     #Calculando a tendência
-    if ((valores_reais[acao][0] - valores_reais[acao][1]) > 0) and ((valores_reais[acao][0] - ultima_predicao[acao][0]) > 0):
+    if ((valores_reais[acao][0] - valores_reais[acao][1]) > 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) > 0):
         valores_tendencia.append("Acertou")
-    elif ((valores_reais[acao][0] - valores_reais[acao][1]) < 0) and ((valores_reais[acao][0] - ultima_predicao[acao][0]) < 0):
+    elif ((valores_reais[acao][0] - valores_reais[acao][1]) < 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) < 0):
         valores_tendencia.append('Acertou')
     else:
         valores_tendencia.append("Errou")
@@ -93,5 +93,24 @@ cursor = conexao.cursor()
 cursor.execute(query_insert)
 conexao.commit()
 cursor.close()
+
+# %% View tendencies data
+connect = cria_conexao_postgre()
+query = 'SELECT * FROM tendencia'
+tend = pd.read_sql(query,connect)
+
+vector = []
+for col in tend.columns:
+    percent = (tend[col][tend[col]=='Acertou'].count()/len(tend[col]))*100
+    print(f'Ação: {col} - Acertos: {percent}')
+    vector.append(percent)
+vector = np.array(vector).reshape(1,-1)
+dict_data = {}
+i = 0
+for col in tend.columns:
+    dict_data[col] = vector[0][i]
+    i+=1
+
+a = {k: v for k, v in sorted(dict_data.items(), key=lambda item: item[1])}
 
 # %%

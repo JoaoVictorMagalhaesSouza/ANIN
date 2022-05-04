@@ -122,7 +122,7 @@ montaBDAcoes <- function(acao){
 
   return (BancoDeDados_Acoes)
 }
-
+teste <- montaBDAcoes('B3SA3.SA')
 acoesDisponiveis <- c("ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
                       "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
                       "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
@@ -234,6 +234,7 @@ createDataSet <- function(acao){
     tickers = acao, #Especificando as ações
     first.date = DI,
     last.date= DF,
+    thresh.bad.data = 0.8,
     bench.ticker = benchmark)
   
   

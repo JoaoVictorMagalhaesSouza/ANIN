@@ -173,7 +173,7 @@ shinyServer(function(input, output) {
                     
                     labs(x = 'Risco',
                          y = 'Retorno Esperado',
-                         title = "Fronteira Eficiente de Markowitz",
+                         title = "Retorno x Risco via Teoria de Markowitz",
                          colour = "Índice Sharpe") +
                     
                     geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
