@@ -80,7 +80,7 @@ preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
 volume = df.tail(1)['volume'].values
 preco_ajustado = round(df.tail(1)['price.adjusted'].values[0],2)
 erro = round(calcula_erro(df),2)
-acertos = round(calcula_acertos(ativo),2)
+#acertos = round(calcula_acertos(ativo),2)
 
 
 os.remove(f'{nome_ativo}.csv')

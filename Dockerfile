@@ -29,7 +29,8 @@ RUN R -e "install.packages('shinydashboard', repos='http://cran.rstudio.com/')"
 RUN sudo apt-get install r-cran-raster -y
 RUN sudo apt-get install r-cran-devtools -y
 RUN sudo apt-get install r-cran-magrittr -y
-RUN R -e "install.packages(pkgs=c('shiny' ,'shinyjs' ,'shinyBS' ,'plotly' ,'shinythemes' ,'shinycssloaders' ,'RColorBrewer' ,'data.table' ,'tidyverse' ,'readr' ,'stringr' ,'BatchGetSymbols' ,'plyr' ,'reshape2' ,'rsconnect' ,'pracma' ,'ggthemes' ,'lubridate' ,'GGally' ,'ggplot2' ,'viridis' ,'fPortfolio' ,'timeSeries' ,'dplyr' ,'dygraphs' ,'xts' ,'caret' ,'rpart.plot' ,'reticulate' ,'rjson','leaflet' ,'GetDFPData','shinydashboardPlus'), repos='https://cran.rstudio.com/')"
+RUN R -e "install.packages(pkgs=c('shiny' ,'shinyjs' ,'shinyBS' ,'plotly' ,'shinythemes' ,'shinycssloaders' ,'RColorBrewer' ,'data.table' ,'tidyverse' ,'readr' ,'stringr' ,'plyr' ,'reshape2' ,'rsconnect' ,'pracma' ,'ggthemes' ,'lubridate' ,'GGally' ,'ggplot2' ,'viridis' ,'fPortfolio' ,'timeSeries' ,'dplyr' ,'dygraphs' ,'xts' ,'caret' ,'rpart.plot' ,'reticulate' ,'rjson','leaflet' ,'GetDFPData','shinydashboardPlus'), repos='https://cran.rstudio.com/')"
+RUN R -e "devtools::install_github('msperlin/BatchGetSymbols')"
 RUN sudo apt-get install r-cran-rjava -y
 RUN sudo apt-get install r-cran-plotrix -y
 RUN sudo apt-get install r-cran-fportfolio -y

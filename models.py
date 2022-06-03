@@ -14,7 +14,7 @@ class ModelXGboost():
         
     def fit(self):
         self.model = XGBRegressor(n_estimators=1500, learning_rate=0.05, max_depth=12, random_state=42,
-        eval_metric='mae', gamma=0.5, reg_lambda = 0.6, reg_alpha=0.7, subsample=0.8)
+        eval_metric='mae', subsample=0.8)
         self.model.fit(self.X_train, self.y_train)
         
     def predict(self, X_test_xgb):
