@@ -10,7 +10,7 @@ import psycopg2
 
 def cria_conexao_postgre()-> psycopg2.extensions.connection:
     params = {
-    'host': '34.68.154.58',
+    'host': '35.192.156.21',
     'database': 'postgres',
     'user':'postgres',
     'password':'1',
