@@ -96,7 +96,7 @@ cursor.close()
 
 # %% View tendencies data
 connect = cria_conexao_postgre()
-query = 'SELECT * FROM tendencia'
+query = 'SELECT * FROM tendencia ORDER BY "TS" DESC LIMIT 10'
 tend = pd.read_sql(query,connect)
 
 vector = []
