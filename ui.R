@@ -11,7 +11,7 @@
 
 shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
   
-  dashboardHeader(title = "Análise da Bolsa de Valores de São Paulo",titleWidth = '500px'),
+  dashboardHeader(title = "Análise da Bolsa de Valores do Brasil",titleWidth = '500px'),
   
 
   sidebar <- dashboardSidebar(
@@ -49,8 +49,8 @@ shinyUI(shinydashboardPlus::dashboardPage(md=T, skin = 'blue-light',
              h3(style = "font-weight: bold","Projeto: Análise dos Ativos da B",tags$sup("3")),
              p(style = "text-align: justify;", style = "font-size:25px;","Propomos com este trabalho, 
             uma maneira prática e objetiva para visualizar de forma interativa 
-            e comparativa a evolução dos preço de ativos da Bolsa de Valores de 
-            São Paulo. Esta", em("dashboard"), "foi produzida como resultado do 
+            e comparativa a evolução dos preço de ativos da Bolsa de Valores do 
+            Brasil. Este", em("dashboard"), "foi produzido como resultado do 
             trabalho de Iniciação Científica voluntária do aluno de graduação", 
                strong("João Victor M. Souza"), "orientado pelo professor", 
                strong("Fernando de Souza Bastos"), "(vide aba 'Desenvolvedores')."

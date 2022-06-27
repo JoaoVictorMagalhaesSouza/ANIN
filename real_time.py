@@ -9,6 +9,8 @@ import os.path
 import json
 import pickle
 from calcula_acertos import *
+from database import *
+from datetime import datetime
 
 
 
@@ -23,20 +25,36 @@ def preditaXGB(X_train,X_test,y_train):
     pred = model.predict(X_test)
     return pred[0]
     
-def calcula_erro(df):
-    df = pd.read_csv('df_for_error.csv', index_col='ref.date')
-    df_train = df[:int(len(df)*0.9)]
-    df_test = df[int(len(df)*0.9):]
-    X_train, y_train = df_train.drop('preco_fechamento_amanha', axis = 1), df_train['preco_fechamento_amanha']
-    X_test, y_test = df_test.drop('preco_fechamento_amanha', axis = 1), df_test['preco_fechamento_amanha']
-    preditaXGB(X_train,X_test,y_train)
-    model = pickle.load(open('xgb_model', "rb"))
-    predicao = model.predict(X_test)
-    percentual_dif = 0
-    real = y_test.values
-    for r,p in zip(predicao,real):
-        percentual_dif += (abs(r-p)/r)
-    return percentual_dif
+def calcula_erro(nome_ativo):
+    conexao = cria_conexao_postgre()
+    query = f'SELECT "TS","{nome_ativo}" FROM dados_predicao ORDER BY "TS" DESC LIMIT 10'
+    dados_predicao = pd.read_sql(query, con=conexao)
+    ts_predicao = dados_predicao.pop('TS')
+    dados_predicao = (dados_predicao/100)[nome_ativo].values
+
+    data_inicial = min(ts_predicao).strftime("%Y-%m-%d")
+    data_final = max(ts_predicao).strftime("%Y-%m-%d")
+    dados_reais = df = web.DataReader(nome_ativo, 'yahoo', start=data_inicial,end=data_final)['Close'].values
+
+    erro_percentual = 0
+    for i in range (len(dados_predicao)):
+        erro_percentual += abs((dados_predicao[i]-dados_reais[i])/dados_reais[i])
+    
+
+    # df = pd.read_csv('df_for_error.csv', index_col='ref.date')
+    # df_train = df[:int(len(df)-10)]
+    # df_test = df[:int(len(df)-10):]
+    # X_train, y_train = df_train.drop('preco_fechamento_amanha', axis = 1), df_train['preco_fechamento_amanha']
+    # X_test, y_test = df_test.drop('preco_fechamento_amanha', axis = 1), df_test['preco_fechamento_amanha']
+    # preditaXGB(X_train,X_test,y_train)
+    # model = pickle.load(open('xgb_model', "rb"))
+    # predicao = model.predict(X_test)
+    # percentual_dif = 0
+    # real = y_test.values
+    # for r,p in zip(predicao,real):
+    #     percentual_dif += (abs(r-p)/r)
+    return erro_percentual*100
+
     
 
 
@@ -82,7 +100,7 @@ preco_mais_alto = round(df.tail(1)['price.high'].values[0],2)
 preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
 volume = df.tail(1)['volume'].values
 preco_ajustado = round(df.tail(1)['price.adjusted'].values[0],2)
-erro = round(calcula_erro(df),2)
+erro = round(calcula_erro(nome_ativo),2)
 acertos = round(calcula_acertos(ativo),2)
 
 
