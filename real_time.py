@@ -25,8 +25,11 @@ def preditaXGB(X_train,X_test,y_train):
     
 def calcula_erro(df):
     df = pd.read_csv('df_for_error.csv', index_col='ref.date')
-    df_test = df[int(len(df)*0.8):]
+    df_train = df[:int(len(df)*0.9)]
+    df_test = df[int(len(df)*0.9):]
+    X_train, y_train = df_train.drop('preco_fechamento_amanha', axis = 1), df_train['preco_fechamento_amanha']
     X_test, y_test = df_test.drop('preco_fechamento_amanha', axis = 1), df_test['preco_fechamento_amanha']
+    preditaXGB(X_train,X_test,y_train)
     model = pickle.load(open('xgb_model', "rb"))
     predicao = model.predict(X_test)
     percentual_dif = 0

@@ -22,7 +22,7 @@ acoesDisponiveis = ["ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.S
                       "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
                       "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
                       "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
-                      "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" ]
+                      "VIVT3.SA"  ,"WEGE3.SA" ]
 #%% Realizando predicoes
 amanha = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
 valores = [amanha]
@@ -50,7 +50,7 @@ for acao in acoesDisponiveis:
         X_test = df_test.drop('preco_fechamento_amanha', axis = 1)
         model = ModelXGboost(X_train, y_train)
         model.fit()
-        resultado = model.predict(X_test)[0]
+        resultado = model.predict(X_test)[0]    
         valores.append(float(resultado)*100)
 
 
@@ -63,7 +63,7 @@ start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 end = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 valores_reais = pd.DataFrame()
 valores_reais['TS'] = [start,end]
-valores_tendencia = [end]
+valores_tendencia = [end[0:10]]
 for acao in acoesDisponiveis:
     linha = web.DataReader(acao, 'yahoo', start=start, end=end)
     valores_reais[acao] = (linha.loc[:,['Close']]*100).values
