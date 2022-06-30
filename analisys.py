@@ -19,8 +19,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import pandas_datareader as web
-with open ('configs.json') as file:
-    ativo = json.load(file)[0]
+
 
 def make_fig(y_true,y_pred_xgb, y_pred_lstm,index,conj):
     fig = make_subplots(specs=[[{'secondary_y': True}]])
@@ -28,7 +27,7 @@ def make_fig(y_true,y_pred_xgb, y_pred_lstm,index,conj):
     go.Scatter(
     x=index,
     y=y_true,
-    name='Valor Real',
+    name='Real Price',
     mode='lines',
     marker_color='#000000',
     ), secondary_y=False)
@@ -55,14 +54,14 @@ def make_fig(y_true,y_pred_xgb, y_pred_lstm,index,conj):
    
 
     fig.update_yaxes(
-        title_text="Preço",
+        title_text="Price (R$)",
         
             secondary_y=False, 
             gridcolor='#d3d3d3', 
             zerolinecolor='black')
 
     fig.update_xaxes(
-        title_text="Data",
+        title_text="Date",
             gridcolor='#d3d3d3', 
             zerolinecolor='black')
 
@@ -71,7 +70,7 @@ def make_fig(y_true,y_pred_xgb, y_pred_lstm,index,conj):
             plot_bgcolor='rgba(0,0,0,0)',
             margin=dict(l=100, r=0, b=50, t=50),
             height=350,
-            title={'text': 'Real x Predito', 'y':0.9, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'},
+            title={'text': 'Graph of true values vs predicted values', 'y':0.9, 'x':0.5, 'xanchor': 'center', 'yanchor': 'top'},
             )
     #fig.show()
     #save fig
@@ -92,8 +91,9 @@ def preditaXGB(X_train,X_test,y_train,y_test,dates):
     for r,p in zip(list(pred),list(y_test.values)):
         #print(f'Real: {r} Pred: {p}')
         percentual_dif += (abs(r-p)/r)
+    percentual_dif = percentual_dif/len(pred)
     #dados_erro_percent[acao] = [percentual_dif]
-    print('Percentual de erro do XGboost: +-', round(percentual_dif,2),"%")
+    print('Percentual de erro do XGboost: +-', percentual_dif*100,"%")
     #R2
     r2 = r2_score(y_test,pred)
     #dados_r2[acao] = [r2]
@@ -177,7 +177,8 @@ def preditaLSTM(X_train,X_test,y_train,y_test,dates):
     for r,p in zip(pred,y_test):
         
         percentual_dif += (abs(r-p)/r)
-    print('Percentual de erro do LSTM: +-', round(percentual_dif,2),"%")
+    percentual_dif = percentual_dif/len(pred)    
+    print('Percentual de erro do LSTM: +-', percentual_dif*100,"%")
     #dados_erro_percent[acao] = [percentual_dif]
     r2 = r2_score(y_test,pred)
     #dados_r2[acao] = [r2]
@@ -227,7 +228,7 @@ def main(df):
             dados_mse[acao] = mse
             dados_erro_percent[acao] = percentual_dif
             dados_r2[acao] = r2
-            #make_fig(y_test,x,l,datas_test,conj)
+            make_fig(y_test,pred_xgb,pred_lstm,datas_test,conj)
 
 
         # else:
@@ -246,17 +247,18 @@ def main(df):
 #"Ative_name" vem do Shiny
 #nome_ativo = ativo
 #nome_ativo = 'BBAS3.SA'
-acoesDisponiveis = ["ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
-                      "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
-                      "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
-                      "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
-                      "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
-                      "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" ,  "ITSA4.SA",  "ITUB4.SA", 
-                      "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
-                      "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
-                      "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
-                      "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
-                      "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" ]
+# acoesDisponiveis = ["ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
+#                       "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
+#                       "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
+#                       "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
+#                       "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
+#                       "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" ,  "ITSA4.SA",  "ITUB4.SA", 
+#                       "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
+#                       "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
+#                       "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
+#                       "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
+#                       "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" ]
+acoesDisponiveis = ['B3SA3.SA','VALE3.SA','BBAS3.SA']
 dados_mae = pd.DataFrame()
 dados_mse = pd.DataFrame()
 dados_erro_percent = pd.DataFrame()

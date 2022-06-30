@@ -11,6 +11,7 @@ import pickle
 from calcula_acertos import *
 from database import *
 from datetime import datetime
+from sklearn.metrics import mean_absolute_percentage_error as mape
 
 
 
@@ -29,17 +30,32 @@ def calcula_erro(nome_ativo):
     conexao = cria_conexao_postgre()
     query = f'SELECT "TS","{nome_ativo}" FROM dados_predicao ORDER BY "TS" DESC LIMIT 10'
     dados_predicao = pd.read_sql(query, con=conexao)
-    ts_predicao = dados_predicao.pop('TS')
-    dados_predicao = (dados_predicao/100)[nome_ativo].values
+    max_ts = dados_predicao[dados_predicao.index==0]
+    today = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    ts_predicao = dados_predicao['TS']
+    ts_predicao.pop(0)
+    dados_predicao[nome_ativo] = (dados_predicao[nome_ativo]/100).values
+    if (int(today[11:13]) < 17) or (max_ts['TS'][0] != today[0:10]):
+        lastElementIndex = 0
+        dados_predicao = dados_predicao[dados_predicao.index != lastElementIndex]
 
     data_inicial = min(ts_predicao).strftime("%Y-%m-%d")
     data_final = max(ts_predicao).strftime("%Y-%m-%d")
-    dados_reais = df = web.DataReader(nome_ativo, 'yahoo', start=data_inicial,end=data_final)['Close'].values
+    dados_reais = web.DataReader(nome_ativo, 'yahoo', start=data_inicial,end=data_final)
+    #dados_reais = dados_reais[dados_reais.index.isin(ts_predicao)]
+    dados_reais['TS'] = dados_reais.index
+    dados_reais['TS'] = dados_reais['TS'].astype(str)
+    dados_predicao['TS'] = dados_predicao['TS'].astype(str) 
+    df_final = dados_predicao.merge(dados_reais,on='TS')
+
+    dados_predicao = df_final.pop(nome_ativo).values
+    dados_reais = df_final.pop('Close').values
+        
 
     erro_percentual = 0
     for i in range (len(dados_predicao)):
         erro_percentual += abs((dados_predicao[i]-dados_reais[i])/dados_reais[i])
-    
+    erro_percentual = erro_percentual/len(dados_predicao)
 
     # df = pd.read_csv('df_for_error.csv', index_col='ref.date')
     # df_train = df[:int(len(df)-10)]
@@ -94,8 +110,12 @@ df = df.fillna(0)
 #Pegar o ultimo valor dos dados (último dia)
 
 predicao = round(main(df),2)
+print("")
+print(df.tail(1))
 preco_fechamento = round(df.tail(1)['price.close'].values[0],2)
+print("Preço de Fechamento:",preco_fechamento)
 preco_abertura = round(df.tail(1)['price.open'].values[0],2)
+print("Preço de Abertura:",preco_abertura)
 preco_mais_alto = round(df.tail(1)['price.high'].values[0],2)
 preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
 volume = df.tail(1)['volume'].values

@@ -23,6 +23,7 @@ class ModelXGboost():
     
     def get_booster(self):
         return self.model.get_booster()
+    
 
 class ModelLSTM():
     def __init__(self, X_train, x_test, y_train, y_test):
