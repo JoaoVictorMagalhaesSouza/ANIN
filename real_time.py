@@ -110,12 +110,8 @@ df = df.fillna(0)
 #Pegar o ultimo valor dos dados (último dia)
 
 predicao = round(main(df),2)
-print("")
-print(df.tail(1))
 preco_fechamento = round(df.tail(1)['price.close'].values[0],2)
-print("Preço de Fechamento:",preco_fechamento)
 preco_abertura = round(df.tail(1)['price.open'].values[0],2)
-print("Preço de Abertura:",preco_abertura)
 preco_mais_alto = round(df.tail(1)['price.high'].values[0],2)
 preco_mais_baixo = round(df.tail(1)['price.low'].values[0],2)
 volume = df.tail(1)['volume'].values

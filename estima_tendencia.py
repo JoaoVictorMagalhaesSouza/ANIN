@@ -59,7 +59,7 @@ connect = cria_conexao_postgre()
 query = "SELECT * FROM dados_predicao WHERE 'TS'=(SELECT MAX('TS') FROM dados_predicao)"
 ultima_predicao = pd.read_sql(query, con=connect).tail(1)
 #Mudar aqui todo dia para a data de ontem (ou ultimo dia util)
-start = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+start = "2022-07-01" #(datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 end = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
 valores_reais = pd.DataFrame()
 valores_reais['TS'] = [start,end]
@@ -68,12 +68,12 @@ for acao in acoesDisponiveis:
     linha = web.DataReader(acao, 'yahoo', start=start, end=end)
     valores_reais[acao] = (linha.loc[:,['Close']]*100).values
     #Calculando a tendência
-    if ((valores_reais[acao][0] - valores_reais[acao][1]) > 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) > 0):
-        valores_tendencia.append("Acertou")
-    elif ((valores_reais[acao][0] - valores_reais[acao][1]) < 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) < 0):
-        valores_tendencia.append('Acertou')
+    if ((valores_reais[acao][0] - valores_reais[acao][1]) <= 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) <= 0):
+        valores_tendencia.append("Acertou") #Uptrend or stability
+    elif ((valores_reais[acao][0] - valores_reais[acao][1]) > 0) and ((valores_reais[acao][0] - ultima_predicao[acao].values[0]) > 0):
+        valores_tendencia.append('Acertou') #Downtrend
     else:
-        valores_tendencia.append("Errou")
+        valores_tendencia.append("Errou") #Miss
 
 connection = cria_conexao_postgre()
 valores_tendencia = str(valores_tendencia).replace('[', '').replace(']', '').replace(' ', '')

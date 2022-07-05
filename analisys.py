@@ -247,18 +247,18 @@ def main(df):
 #"Ative_name" vem do Shiny
 #nome_ativo = ativo
 #nome_ativo = 'BBAS3.SA'
-# acoesDisponiveis = ["ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
-#                       "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
-#                       "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
-#                       "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
-#                       "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
-#                       "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" ,  "ITSA4.SA",  "ITUB4.SA", 
-#                       "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
-#                       "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
-#                       "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
-#                       "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
-#                       "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" ]
-acoesDisponiveis = ['B3SA3.SA','VALE3.SA','BBAS3.SA']
+acoesDisponiveis = ["ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
+                      "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
+                      "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
+                      "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
+                      "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
+                      "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" ,  "ITSA4.SA",  "ITUB4.SA", 
+                      "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
+                      "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
+                      "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
+                      "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
+                      "VIVT3.SA"  ,"WEGE3.SA" ]
+
 dados_mae = pd.DataFrame()
 dados_mse = pd.DataFrame()
 dados_erro_percent = pd.DataFrame()
@@ -302,10 +302,11 @@ dados_r2 = pd.read_csv('dados_r2.csv')
 xgboost = 0
 lstm = 0
 for col in dados_mae.columns:
-    if (dados_mae[col][0] < dados_mae[col][1]):
-        xgboost += 1
-    else:
-        lstm += 1
+    if col != 'Unnamed: 0':
+        if (dados_mae[col][0] < dados_mae[col][1]):
+            xgboost += 1
+        else:
+            lstm += 1
 
 print(f'Ativos que o MAE do XGBoost é menor que o do LSTM: {xgboost} - {xgboost/len(dados_mae.columns)*100}%')
 print(f'Ativos que o MAE do LSTM é menor que o do XGBoost: {lstm} - {lstm/len(dados_mae.columns)*100}%')
@@ -314,10 +315,11 @@ print(f'Ativos que o MAE do LSTM é menor que o do XGBoost: {lstm} - {lstm/len(d
 xgboost = 0
 lstm = 0
 for col in dados_mse.columns:
-    if (dados_mse[col][0] < dados_mse[col][1]):
-        xgboost += 1
-    else:
-        lstm += 1
+    if col != 'Unnamed: 0':
+        if (dados_mse[col][0] < dados_mse[col][1]):
+            xgboost += 1
+        else:
+            lstm += 1
 
 print(f"Ativos que o MSE do XGBoost é menor que o do LSTM: {xgboost} - {xgboost/len(dados_mse.columns)*100}%")
 print(f"Ativos que o MSE do LSTM é menor que o do XGBoost: {lstm} - {lstm/len(dados_mse.columns)*100}%")
@@ -325,10 +327,11 @@ print(f"Ativos que o MSE do LSTM é menor que o do XGBoost: {lstm} - {lstm/len(d
 xgboost = 0
 lstm = 0
 for col in dados_erro_percent.columns:
-    if (dados_erro_percent[col][0] < dados_erro_percent[col][1]):
-        xgboost += 1
-    else:
-        lstm += 1
+    if col != 'Unnamed: 0':
+        if (dados_erro_percent[col][0] < dados_erro_percent[col][1]):
+            xgboost += 1
+        else:
+            lstm += 1
 
 print(f'Ativos que o Erro Percentual do XGBoost é menor que o do LSTM: {xgboost} - {xgboost/len(dados_erro_percent.columns)*100}%')
 print(f'Ativos que o Erro Percentual do LSTM é menor que o do XGBoost: {lstm} - {lstm/len(dados_erro_percent.columns)*100}%')
@@ -337,10 +340,11 @@ print(f'Ativos que o Erro Percentual do LSTM é menor que o do XGBoost: {lstm} -
 xgboost = 0
 lstm = 0
 for col in dados_r2.columns:
-    if (dados_r2[col][0] > dados_r2[col][1]):
-        xgboost += 1
-    else:
-        lstm += 1
+    if col != 'Unnamed: 0':
+        if (dados_r2[col][0] > dados_r2[col][1]):
+            xgboost += 1
+        else:
+            lstm += 1
 
 print(f"Ativos que o R2 do XGBoost é maior que o do LSTM: {xgboost} - {xgboost/len(dados_r2.columns)*100}%")
 print(f"Ativos que o R2 do LSTM é maior que o do XGBoost: {lstm} - {lstm/len(dados_r2.columns)*100}%")
