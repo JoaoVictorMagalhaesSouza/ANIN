@@ -40,6 +40,7 @@ for acao in acoesDisponiveis:
 
     df_fe = FeatureEngineering(df).pipeline_feat_eng()
     df_ml = df.join(df_fe)
+    break
     
     df_ml['preco_fechamento_ant'] = df_ml['price.close'].shift(1)
     df_ml['preco_fechamento_amanha'] = df_ml['price.close'].shift(-1)
@@ -58,14 +59,15 @@ for acao in acoesDisponiveis:
     data = pd.DataFrame(data=values, index=keys, columns=["score"]).sort_values(by = "score", ascending=False)
     fig = px.bar(data, x="score", y=data.index, orientation='h', title='Importância das Features',
     labels={'score': 'Importância','index':'Feature'}, color='score')
+
     
-    fig.update_layout(
-        # paper_bgcolor='rgba(0,0,0,0)',
-        # plot_bgcolor='rgba(0,0,0,0)',
-        margin=dict(l=100, r=0, b=50, t=50),
-        height=800,
-        width=800
-    )    
+    # fig.update_layout(
+    #     # paper_bgcolor='rgba(0,0,0,0)',
+    #     # plot_bgcolor='rgba(0,0,0,0)',
+    #     margin=dict(l=100, r=0, b=50, t=50),
+    #     height=800,
+    #     width=800
+    # )    
     
     fig.write_image("Artigo/feat_importance"+acao+".png")
 #%%
